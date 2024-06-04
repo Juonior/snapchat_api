@@ -2,6 +2,8 @@ import os
 from flask import current_app
 import sqlite3
 
+actualVersion = "1.0.5"
+downloadPath = "static/Snapchat-BETA-v1.0.5.zip"
 costAnswer = 0.1
 
 def create_profile_tables():

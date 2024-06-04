@@ -20,7 +20,7 @@ def create_app():
     if not os.path.exists('logs'):
         os.makedirs('logs')
 
-    file_handler = logging.FileHandler("logs/app3.log", encoding='utf-8')
+    file_handler = logging.FileHandler("logs/app.log", encoding='utf-8')
     file_handler.setLevel(logging.INFO)
     file_formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
     file_handler.setFormatter(file_formatter)
