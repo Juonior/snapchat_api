@@ -1,5 +1,6 @@
 *.zip
 .env
+*.pem
 ssl
 ssl/*
 logs
