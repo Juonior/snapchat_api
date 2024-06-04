@@ -29,16 +29,14 @@ def index():
 
 @bp.route('/download', methods = ['GET'])
 def download():
-    if os.path.isfile(downloadPath):
-        return send_file(downloadPath, as_attachment=True)
-    else:
-        abort(404)  # Возвращает ошибку 404, если файл не найден
+    return send_file(downloadPath, as_attachment=True)
 
-@bp.route('/getAllProfiles', methods = ['POST'])
+
+@bp.route('/getAllProfiles', methods=['POST'])
 def getAllProfiles():
     data = request.get_json()
 
-    # проверяем наличие токена в теле запроса
+    # Проверяем наличие токена в теле запроса
     if "token" not in data:
         return jsonify({"message": "Poor request", "success": False})
     
@@ -46,39 +44,9 @@ def getAllProfiles():
     if not isValidToken(token):
         return jsonify({"message": "Invalid token", "success": False})
     
-    con = sqlite3.connect("profiles.db")
-    cur = con.cursor()
+    profiles = getProfilesByToken(token)
 
-    # получаем все строки с текущим токеном
-    cur.execute("SELECT * FROM profiles WHERE token=?", (token,))
-
-    arrayProfiles = cur.fetchall()
-    column_names = [
-    "id",
-    "name",
-    "modelInfo",
-    "setting",
-    "sourceOfAdds",
-    "age",
-    "city",
-    "link",
-    "cta",
-    "ctaInfo",
-    "ctaMessageNum",
-    "minCooldown",
-    "maxCooldown",
-    "platform",
-    "token"
-    ]
-    profiles = []
-
-    for i in arrayProfiles:
-        profile = {}
-        for j in range(len(arrayProfiles[0])):
-            profile[column_names[j]] = i[j]
-        profiles.append(profile)
-
-    # возвращаем массив из данных о профилях
+    # Возвращаем массив из данных о профилях
     return jsonify({"message": profiles, "success": True})
 
 

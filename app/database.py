@@ -60,6 +60,42 @@ def create_profile_tables():
     cursor.close()
     conn.close()
 
+def getProfilesByToken(token):
+    db_path = os.path.join(current_app.instance_path, "profiles.db")
+    conn = sqlite3.connect(db_path)
+    cur = conn.cursor()
+    
+    # Получаем все строки с текущим токеном
+    cur.execute("SELECT * FROM profiles WHERE token=?", (token,))
+    arrayProfiles = cur.fetchall()
+    
+    column_names = [
+        "id",
+        "name",
+        "modelInfo",
+        "setting",
+        "sourceOfAdds",
+        "age",
+        "city",
+        "link",
+        "cta",
+        "ctaInfo",
+        "ctaMessageNum",
+        "minCooldown",
+        "maxCooldown",
+        "platform",
+        "token"
+    ]
+    
+    profiles = []
+    for i in arrayProfiles:
+        profile = {}
+        for j in range(len(arrayProfiles[0])):
+            profile[column_names[j]] = i[j]
+        profiles.append(profile)
+    
+    conn.close()
+    return profiles
 def getPhotos(profile_id : int, username : str):
     db_path = os.path.join(current_app.instance_path, "profiles.db")
     conn = sqlite3.connect(db_path)
