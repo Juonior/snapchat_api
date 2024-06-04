@@ -7,7 +7,6 @@ from crop import resize_image_base64
 import logging
 from functools import wraps
 app = Flask(__name__)
-# CORS(app)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
 actualVersion = "1.0.5"
@@ -479,18 +478,8 @@ def get_answer():
 
         return jsonify({"message": "Add at least 1 message", "success" : False})
     
-        # Получаем ответ пользователю
-    #     if len(messages) > 0:
-    #         answer = getAnswer(messages, name, modelInfo, setting, sourcheOfAdds, age, city, link, ctaInfo, platform)
-    #     else:
-    #         return jsonify({"message": "Add at least 1 message", "success" : False})
-    #     
-    #     return jsonify({"message": answer, "success" : True})
-    # else:
-    #     
-    #     return jsonify({"message": "Insufficient balance", "success": False})
-    
     
 
 if __name__ == '__main__':
-   app.run(host='0.0.0.0', port=443, debug=True, ssl_context=('ssl/cert.pem', 'ssl/key.pem'))
+     app.run()
+   # app.run(host='0.0.0.0', port=443, debug=True, ssl_context=('ssl/cert.pem', 'ssl/key.pem'))
