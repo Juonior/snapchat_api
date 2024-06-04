@@ -1,10 +1,14 @@
 from openai import OpenAI
-import re
 import httpx
+from config import CHATGPT_API_KEY, CHATGPT_BASE_PROPMT, PROXY_URL
+
+
+
+
 
 client = OpenAI(
-    api_key="YOUR API KEY",
-    http_client=httpx.Client(proxy="YOUR PROXY")
+    api_key=CHATGPT_API_KEY,
+    http_client=httpx.Client(proxy=PROXY_URL)
 )
 
 def makeSlang(answer):
@@ -98,9 +102,7 @@ def getPhoto(snapchatMessages):
     return ans
 
 def getAnswer(message, name, modelInfo, setting, sourceOfAdds, age, city, link, ctaInfo, platform):
-    prompt = '''
-    YOUR PROMPT
-    '''
+    prompt = CHATGPT_BASE_PROPMT
     prompt = replaceAny(prompt, name, modelInfo, setting, sourceOfAdds, age, city, link, ctaInfo, platform)
     
     messages = [{"role" : "system" , "content": prompt}]
