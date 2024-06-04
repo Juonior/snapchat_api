@@ -11,14 +11,24 @@
 
 1. Клонируйте репозиторий:
 ```sh
-git clone https://github.com/your/repository.git
+git clone https://github.com/Juonior/snapchat_api.git
+```
+
+2.Перейдите в каталог проекта:
+
+```sh
+cd snapchat_api
+```
+3. Установите зависимости из requirements.txt:
+```sh
+pip install -r requirements.txt
 ```
 
 ## Использование
 
 После установки проекта запустите его с помощью команды:
 ```sh
-python main.py
+python run.py
 ```
 
 API будет доступно по адресу http://localhost:5000.
