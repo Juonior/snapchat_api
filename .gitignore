@@ -1,6 +1,7 @@
 *.zip
 .env
-*.pem
+cert.pem
+key.pem
 SSL
 SSL/*
 logs
