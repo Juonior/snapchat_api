@@ -329,6 +329,55 @@ def isValidToken(token):
         return False
     
 
+def get_profile_id(profile_id):
+    db_path = os.path.join(current_app.instance_path, "profiles.db")
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    cursor.execute("SELECT id FROM profiles WHERE id=?", (profile_id,))
+    selectID = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    return selectID
+
+def get_photos(profile_id):
+    db_path = os.path.join(current_app.instance_path, "profiles.db")
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM photos WHERE profile_id = ?", (profile_id,))
+    selectPhotos = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return selectPhotos
+
+def delete_photos(profile_id):
+    db_path = os.path.join(current_app.instance_path, "profiles.db")
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM photos WHERE profile_id = ?", (profile_id,))
+    cursor.execute("DELETE FROM countPhotos WHERE profile_id = ?", (profile_id,))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+def delete_photo(photo_id):
+    db_path = os.path.join(current_app.instance_path, "profiles.db")
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM photos WHERE id = ?", (photo_id,))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+def get_photo_id(photo_id):
+    db_path = os.path.join(current_app.instance_path, "profiles.db")
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    cursor.execute("SELECT id FROM photos WHERE id=?", (photo_id,))
+    selectID = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    return selectID
+
 def db_init(app):
     with app.app_context():
         create_profile_tables()

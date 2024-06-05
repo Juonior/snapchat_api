@@ -76,47 +76,34 @@ def addPhoto():
     return jsonify(addingPhoto(profile_id, resizeImage))
 
 
-@bp.route('/getAllPhotos', methods = ['POST'])
+@bp.route('/getAllPhotos', methods=['POST'])
 def getAllPhotos():
     data = request.get_json()
 
     # проверяем наличие id и токена в теле запроса
     if "profile_id" not in data or "token" not in data:
         return jsonify({"message": "Poor request", "success": False})
-    
+
     token = data["token"]
     id = data["profile_id"]
 
     # проверяем валиден ли токен
     if not isValidToken(token):
         return jsonify({"message": "Invalid token", "success": False})
-    
+
     if not checkProfileToken(id, token):
         return jsonify({"message": "Invalid token for this profile", "success": False})
-    
-    conn = sqlite3.connect('profiles.db')
-    cursor = conn.cursor()
 
-    cursor.execute("SELECT id FROM profiles WHERE id=?", (id,))
-    selectID = cursor.fetchone()
-    
-    if (selectID):
-        cursor.execute("SELECT * FROM photos WHERE profile_id = ?", (id,))
-        selectPhotos = cursor.fetchall()
-        Photos = []
-        for i in selectPhotos:
-            Photos.append({"id": i[0], "photo": i[2]}) 
-        cursor.close()
-        conn.close()
+    selectID = get_profile_id(id)
+
+    if selectID:
+        selectPhotos = get_photos(id)
+        Photos = [{"id": i[0], "photo": i[2]} for i in selectPhotos]
         return jsonify({"message": Photos, "success": True})
-    
     else:
-        cursor.close()
-        conn.close()
         return jsonify({"message": "Invalid id", "success": False})
-    
-@bp.route('/deleteAllPhotos', methods = ['POST'])
 
+@bp.route('/deleteAllPhotos', methods=['POST'])
 def deleteAllPhotos():
     data = request.get_json()
 
@@ -128,73 +115,45 @@ def deleteAllPhotos():
 
     if not isValidToken(token):
         return jsonify({"message": "Invalid token", "success": False})
-    
+
     if not checkProfileToken(id, token):
         return jsonify({"message": "Invalid token for this profile", "success": False})
-    
-    conn = sqlite3.connect('profiles.db')
-    cursor = conn.cursor()
 
-    cursor.execute("SELECT id FROM profiles WHERE id=?", (id,))
-    selectProfileID = cursor.fetchone()
+    selectProfileID = get_profile_id(id)
 
-    if (selectProfileID):
-        cursor.execute("DELETE FROM photos WHERE profile_id = ?", (id,))
-        cursor.execute("DELETE FROM countPhotos WHERE profile_id = ?", (id,))
-
-        conn.commit()
-        cursor.close()
-        conn.close()
+    if selectProfileID:
+        delete_photos(id)
         return jsonify({"message": "Successful delete", "success": True})
     else:
-
-        cursor.close()
-        conn.close()
-        return jsonify({"message": "Invalid profile ID", "success": False})    
+        return jsonify({"message": "Invalid profile ID", "success": False})
     
-@bp.route('/deletePhoto', methods = ['POST'])
-
+@bp.route('/deletePhoto', methods=['POST'])
 def deletePhoto():
     data = request.get_json()
     checkdata = ["token", "id", "profile_id"]
 
     if len(set(data) & set(checkdata)) != 3:
         return jsonify({"message": "Poor request", "success": False})
-    
+
     token = data["token"]
     id = data["id"]
     profileID = data["profile_id"]
 
     if not isValidToken(token):
         return jsonify({"message": "Invalid token", "success": False})
-    
-    if not checkProfileToken(id, token):
+
+    if not checkProfileToken(profileID, token):
         return jsonify({"message": "Invalid token for this profile", "success": False})
-    
-    conn = sqlite3.connect('profiles.db')
-    cursor = conn.cursor()
 
-    cursor.execute("SELECT id FROM profiles WHERE id=?", (profileID,))
-    selectProfileID = cursor.fetchone()
+    selectProfileID = get_profile_id(profileID)
+    selectID = get_photo_id(id)
 
-    cursor.execute("SELECT id FROM photos WHERE id=?", (id,))
-    selectID = cursor.fetchone()
-    if not(selectProfileID):
-
-        cursor.close()
-        conn.close()
+    if not selectProfileID:
         return jsonify({"message": "Invalid profile ID", "success": False})
-    elif not(selectID):
-
-        cursor.close()
-        conn.close()
+    elif not selectID:
         return jsonify({"message": "Invalid photo ID", "success": False})
     else:
-        cursor.execute("DELETE FROM photos WHERE id = ?", (id,))
-
-        conn.commit()
-        cursor.close()
-        conn.close()
+        delete_photo(id)
         return jsonify({"message": "Successful delete", "success": True})
     
 @bp.route('/updateProfile', methods = ['POST'])   
