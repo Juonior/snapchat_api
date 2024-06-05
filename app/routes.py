@@ -25,7 +25,7 @@ bp = Blueprint('routes', __name__)
 
 @bp.route('/', methods = ['GET'])
 def index():
-    return render_template('index.html')
+    return render_template('main.html')
 
 @bp.route('/download', methods = ['GET'])
 def download():
